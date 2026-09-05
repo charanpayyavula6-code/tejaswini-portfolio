@@ -22,17 +22,20 @@ TEJASWINI_PROFILE_KNOWLEDGE = {
         {
             "name": "Face Recognition Attendance System",
             "tech": "Python, OpenCV, Face Recognition, MySQL",
-            "desc": "Real-time webcam biometric face detection, landmark extraction, and automated timestamped attendance logging to MySQL."
+            "desc": "Real-time webcam biometric face detection, landmark extraction, and automated timestamped attendance logging to MySQL.",
+            "repo": "https://github.com/pemmasanitejaswini/face-project"
         },
         {
             "name": "Email Spam Detection",
             "tech": "Python, Machine Learning, NLP, Scikit-Learn",
-            "desc": "Natural language processing text classification pipeline distinguishing genuine emails from spam/phishing."
+            "desc": "Natural language processing text classification pipeline distinguishing genuine emails from spam/phishing.",
+            "repo": "https://github.com/pemmasanitejaswini/email-spam-detection"
         },
         {
             "name": "CAPTCHA Generator",
             "tech": "Python, Web Technologies, Cryptography",
-            "desc": "Dynamic visual CAPTCHA generator with procedural noise injection and salted cryptographic verification."
+            "desc": "Dynamic visual CAPTCHA generator with procedural noise injection and salted cryptographic verification.",
+            "repo": "https://github.com/pemmasanitejaswini/captcha-generator"
         }
     ],
     "certifications": [
@@ -45,7 +48,7 @@ TEJASWINI_PROFILE_KNOWLEDGE = {
         "phone": "+91 9392576974",
         "location": "Gudur, Andhra Pradesh, India",
         "linkedin": "https://linkedin.com/in/tejaswini-pemmasani-cse",
-        "github": "https://github.com/tejaswini-pemmasani"
+        "github": "https://github.com/pemmasanitejaswini"
     }
 }
 

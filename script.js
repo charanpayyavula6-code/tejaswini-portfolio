@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'Automated timestamp recording and attendance logging into MySQL.',
         'Proxy attendance mitigation by requiring physical live camera presence.'
       ],
-      technologies: ['Python', 'OpenCV', 'Face Recognition', 'MySQL']
+      technologies: ['Python', 'OpenCV', 'Face Recognition', 'MySQL'],
+      repo_url: 'https://github.com/pemmasanitejaswini/face-project'
     },
     'email-spam': {
       title: 'Email Spam Detection',
@@ -36,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'Binary classification distinguishing genuine communications from malicious spam.',
         'Rapid inference allowing fast classification of raw email bodies.'
       ],
-      technologies: ['Python', 'Machine Learning', 'NLP']
+      technologies: ['Python', 'Machine Learning', 'NLP'],
+      repo_url: 'https://github.com/pemmasanitejaswini/email-spam-detection'
     },
     'captcha-gen': {
       title: 'CAPTCHA Generator',
@@ -50,7 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'User-friendly frontend verification interface for seamless user confirmation.',
         'Lightweight integration suitable for web application forms and login gates.'
       ],
-      technologies: ['Python', 'HTML', 'Web Technologies']
+      technologies: ['Python', 'HTML', 'Web Technologies'],
+      repo_url: 'https://github.com/pemmasanitejaswini/captcha-generator'
     }
   };
 
@@ -69,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
               problem: p.problem,
               solution: p.solution,
               features: p.features || [],
-              technologies: p.technologies || []
+              technologies: p.technologies || [],
+              repo_url: p.repo_url || PROJECT_DATA[p.slug]?.repo_url || 'https://github.com/pemmasanitejaswini'
             };
           });
         }
@@ -323,6 +327,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalProjectTitle.textContent = data.title;
     modalProjectCategory.textContent = data.category;
+
+    const modalRepoBtn = document.getElementById('modal-repo-btn');
+    if (modalRepoBtn && data.repo_url) {
+      modalRepoBtn.href = data.repo_url;
+    }
 
     const techChipsHtml = data.technologies
       .map(tech => `<span class="tech-chip">${tech}</span>`)

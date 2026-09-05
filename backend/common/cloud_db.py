@@ -109,7 +109,7 @@ class CloudDatabaseManager:
                             "Proxy attendance mitigation by requiring physical live camera presence."
                         ],
                         "technologies": ["Python", "OpenCV", "Face Recognition", "MySQL", "MongoDB"],
-                        "repo_url": "https://github.com/tejaswini-pemmasani/face-attendance-system",
+                        "repo_url": "https://github.com/pemmasanitejaswini/face-project",
                         "live_url": "",
                         "is_featured": True,
                         "display_order": 1
@@ -128,7 +128,7 @@ class CloudDatabaseManager:
                             "Rapid inference allowing fast classification of raw email bodies."
                         ],
                         "technologies": ["Python", "Machine Learning", "NLP", "Scikit-Learn"],
-                        "repo_url": "https://github.com/tejaswini-pemmasani/email-spam-detection",
+                        "repo_url": "https://github.com/pemmasanitejaswini/email-spam-detection",
                         "live_url": "",
                         "is_featured": True,
                         "display_order": 2
@@ -147,7 +147,7 @@ class CloudDatabaseManager:
                             "Lightweight integration suitable for web application forms."
                         ],
                         "technologies": ["Python", "HTML", "Web Technologies", "Cryptography"],
-                        "repo_url": "https://github.com/tejaswini-pemmasani/captcha-generator",
+                        "repo_url": "https://github.com/pemmasanitejaswini/captcha-generator",
                         "live_url": "",
                         "is_featured": True,
                         "display_order": 3

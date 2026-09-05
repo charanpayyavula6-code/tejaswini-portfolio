@@ -215,7 +215,7 @@ def seed_initial_data():
                     "Proxy attendance mitigation by requiring physical live camera presence."
                 ]),
                 technologies_json=json.dumps(["Python", "OpenCV", "Face Recognition", "MySQL"]),
-                repo_url="https://github.com/tejaswini-pemmasani/face-attendance-system",
+                repo_url="https://github.com/pemmasanitejaswini/face-project",
                 live_url="",
                 is_featured=True,
                 display_order=1
@@ -234,7 +234,7 @@ def seed_initial_data():
                     "Rapid inference allowing fast classification of raw email bodies."
                 ]),
                 technologies_json=json.dumps(["Python", "Machine Learning", "NLP", "Scikit-Learn"]),
-                repo_url="https://github.com/tejaswini-pemmasani/email-spam-detection",
+                repo_url="https://github.com/pemmasanitejaswini/email-spam-detection",
                 live_url="",
                 is_featured=True,
                 display_order=2
@@ -253,7 +253,7 @@ def seed_initial_data():
                     "Lightweight integration suitable for web application forms and login gates."
                 ]),
                 technologies_json=json.dumps(["Python", "HTML", "Web Technologies", "Cryptography"]),
-                repo_url="https://github.com/tejaswini-pemmasani/captcha-generator",
+                repo_url="https://github.com/pemmasanitejaswini/captcha-generator",
                 live_url="",
                 is_featured=True,
                 display_order=3
