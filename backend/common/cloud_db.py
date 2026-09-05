@@ -74,6 +74,9 @@ class CloudDatabaseManager:
             self._is_connected = True
             self._last_error = ""
             logger.info(f"Connected to MongoDB Atlas ({self._last_ping_latency_ms}ms ping)")
+            
+            # Ensure collections and initial data are seeded in MongoDB Atlas
+            self._seed_mongo_defaults()
             return True
         except Exception as e:
             self._is_connected = False
@@ -81,6 +84,114 @@ class CloudDatabaseManager:
             self._last_error = str(e)
             logger.warning(f"MongoDB Atlas connection failed: {e}")
             return False
+
+    def _seed_mongo_defaults(self):
+        """Seeds default project, skill, and config documents into MongoDB Atlas if empty."""
+        try:
+            db = self.get_database()
+            if db is None:
+                return
+
+            # 1. Projects
+            if db["portfolio_projects"].count_documents({}) == 0:
+                default_projects = [
+                    {
+                        "slug": "face-attendance",
+                        "title": "Face Recognition Attendance System",
+                        "category": "Computer Vision & Database",
+                        "overview": "Developed a system for real-time face detection and recognition through a webcam using OpenCV and Python. Automated attendance marking to reduce manual effort and prevent proxy attendance.",
+                        "problem": "Traditional manual attendance systems are time-consuming and vulnerable to proxy attendance.",
+                        "solution": "Built an end-to-end computer vision application using Python and OpenCV that captures webcam streams, extracts facial features, and logs verified records directly into the database.",
+                        "features": [
+                            "Real-time webcam video stream capture and frame-by-frame face detection.",
+                            "High-accuracy facial landmark extraction and biometric matching.",
+                            "Automated timestamp recording and attendance logging into database.",
+                            "Proxy attendance mitigation by requiring physical live camera presence."
+                        ],
+                        "technologies": ["Python", "OpenCV", "Face Recognition", "MySQL", "MongoDB"],
+                        "repo_url": "https://github.com/tejaswini-pemmasani/face-attendance-system",
+                        "live_url": "",
+                        "is_featured": True,
+                        "display_order": 1
+                    },
+                    {
+                        "slug": "email-spam",
+                        "title": "Email Spam Detection",
+                        "category": "Machine Learning & NLP",
+                        "overview": "Built a machine-learning model to classify emails as Spam or Not Spam using NLP preprocessing and scikit-learn classifiers.",
+                        "problem": "Unwanted spam and phishing emails clutter inboxes and pose security threats.",
+                        "solution": "Engineered an NLP pipeline to preprocess email bodies, extract TF-IDF features, and accurately detect spam messages.",
+                        "features": [
+                            "NLP preprocessing pipeline including tokenization, lowercasing, and stopword removal.",
+                            "Text feature extraction and vectorization for machine learning classification.",
+                            "Binary classification distinguishing genuine communications from malicious spam.",
+                            "Rapid inference allowing fast classification of raw email bodies."
+                        ],
+                        "technologies": ["Python", "Machine Learning", "NLP", "Scikit-Learn"],
+                        "repo_url": "https://github.com/tejaswini-pemmasani/email-spam-detection",
+                        "live_url": "",
+                        "is_featured": True,
+                        "display_order": 2
+                    },
+                    {
+                        "slug": "captcha-gen",
+                        "title": "CAPTCHA Generator",
+                        "category": "Web Application & Security",
+                        "overview": "Developed a dynamic CAPTCHA generator to improve web-application security by preventing automated bot scripts.",
+                        "problem": "Automated bot crawlers and spam scripts exhaust server resources and exploit unprotected forms.",
+                        "solution": "Engineered dynamic visual CAPTCHA generation with noise overlays and character rotation to ensure human verification.",
+                        "features": [
+                            "Dynamic procedural generation of randomized alphanumeric security strings.",
+                            "Custom visual noise overlays and character rotation to defeat OCR bots.",
+                            "User-friendly frontend verification interface for seamless confirmation.",
+                            "Lightweight integration suitable for web application forms."
+                        ],
+                        "technologies": ["Python", "HTML", "Web Technologies", "Cryptography"],
+                        "repo_url": "https://github.com/tejaswini-pemmasani/captcha-generator",
+                        "live_url": "",
+                        "is_featured": True,
+                        "display_order": 3
+                    }
+                ]
+                db["portfolio_projects"].insert_many(default_projects)
+                logger.info("Seeded default projects into MongoDB Atlas.")
+
+            # 2. Skills
+            if db["portfolio_skills"].count_documents({}) == 0:
+                default_skills = [
+                    {"name": "Python (OOP, Scripting, Automation)", "category": "Programming", "proficiency_pct": 92, "display_order": 1},
+                    {"name": "C Programming & Data Structures", "category": "Programming", "proficiency_pct": 84, "display_order": 2},
+                    {"name": "Flask & RESTful API Architecture", "category": "Web & Backend", "proficiency_pct": 90, "display_order": 3},
+                    {"name": "FastAPI & Async Microservices", "category": "Web & Backend", "proficiency_pct": 88, "display_order": 4},
+                    {"name": "HTML5, CSS3, Modern JavaScript", "category": "Web & Backend", "proficiency_pct": 86, "display_order": 5},
+                    {"name": "MongoDB & PyMongo ODM", "category": "Databases", "proficiency_pct": 90, "display_order": 6},
+                    {"name": "MySQL & SQLite Database Design", "category": "Databases", "proficiency_pct": 88, "display_order": 7},
+                    {"name": "OpenCV & Computer Vision", "category": "Tools & Machine Learning", "proficiency_pct": 88, "display_order": 8},
+                    {"name": "Scikit-Learn (NLP, Classification)", "category": "Tools & Machine Learning", "proficiency_pct": 85, "display_order": 9},
+                    {"name": "Git, GitHub & Version Control", "category": "Tools & Machine Learning", "proficiency_pct": 90, "display_order": 10}
+                ]
+                db["portfolio_skills"].insert_many(default_skills)
+                logger.info("Seeded default skills into MongoDB Atlas.")
+
+            # 3. Profile configs
+            if db["profile_configs"].count_documents({}) == 0:
+                default_configs = [
+                    {"key": "full_name", "value": "Pemmasani Tejaswini", "description": "Full legal/professional name"},
+                    {"key": "professional_title", "value": "Computer Science Engineer | Python & Backend Developer", "description": "Hero headline"},
+                    {"key": "email", "value": "pemmasanitejaswini59@gmail.com", "description": "Primary contact email"},
+                    {"key": "phone", "value": "+91 9392576974", "description": "Primary phone number"},
+                    {"key": "location", "value": "Gudur, Andhra Pradesh, India", "description": "Geographic location"},
+                    {"key": "education_degree", "value": "B.Tech in Computer Science and Engineering", "description": "Degree title"},
+                    {"key": "education_college", "value": "Audisankara College of Engineering & Technology, Gudur", "description": "College"},
+                    {"key": "education_cgpa", "value": "8.5 / 10.0 CGPA (2022 - 2026)", "description": "Academic standing"},
+                    {"key": "github_url", "value": "https://github.com/tejaswini-pemmasani", "description": "GitHub profile link"},
+                    {"key": "linkedin_url", "value": "https://linkedin.com/in/tejaswini-pemmasani-cse", "description": "LinkedIn profile link"}
+                ]
+                db["profile_configs"].insert_many(default_configs)
+                logger.info("Seeded default profile configs into MongoDB Atlas.")
+        except Exception as seed_err:
+            logger.warning(f"Error while seeding MongoDB Atlas: {seed_err}")
+
 
     def is_connected(self) -> bool:
         """Returns True if connected to MongoDB Atlas."""

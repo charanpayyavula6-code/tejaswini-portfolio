@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_gateway.client_fastapi import fastapi_client
 from flask_gateway.database import ProjectItem, SkillItem, ProfileConfig
 from common.logger import setup_logger
+from common.db_engine import db_engine
 
 api_portfolio_bp = Blueprint("api_portfolio_bp", __name__)
 logger = setup_logger("PortfolioGatewayRoute")
@@ -13,14 +14,11 @@ logger = setup_logger("PortfolioGatewayRoute")
 def get_public_projects():
     """Returns active portfolio project case studies formatted for the frontend."""
     try:
-        projects = ProjectItem.query.filter_by(is_featured=True).order_by(
-            ProjectItem.display_order.asc(),
-            ProjectItem.id.asc()
-        ).all()
+        projects = db_engine.get_all_projects(featured_only=True)
         return jsonify({
             "success": True,
             "count": len(projects),
-            "projects": [p.to_dict() for p in projects]
+            "projects": projects
         }), 200
     except Exception as e:
         logger.error(f"Error loading public projects: {e}")
@@ -30,14 +28,14 @@ def get_public_projects():
 def get_public_skills():
     """Returns categorized skills for the public skills matrix."""
     try:
-        skills = SkillItem.query.order_by(SkillItem.category.asc(), SkillItem.display_order.asc()).all()
+        skills = db_engine.get_all_skills()
         # Group by category
         grouped = {}
         for s in skills:
-            cat = s.category
+            cat = s.get("category", "General")
             if cat not in grouped:
                 grouped[cat] = []
-            grouped[cat].append(s.to_dict())
+            grouped[cat].append(s)
             
         return jsonify({
             "success": True,
@@ -52,11 +50,11 @@ def get_public_skills():
 def get_public_profile():
     """Returns candidate profile details."""
     try:
-        configs = ProfileConfig.query.all()
-        data = {c.config_key: c.config_value for c in configs}
+        data = db_engine.get_profile_configs()
         return jsonify({"success": True, "profile": data}), 200
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
 
 # ============================================================================
 # 2. NLP EMAIL SPAM CLASSIFIER GATEWAY
