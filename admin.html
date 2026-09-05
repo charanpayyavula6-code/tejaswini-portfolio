@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT Admin Control Center | Pemmasani Tejaswini Portfolio</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%230f172a'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%2338bdf8' font-size='50' font-family='sans-serif' font-weight='800'>PT</text></svg>" />
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ========================================================================= -->
+  <!-- 1. LOGIN OVERLAY (Shown if unauthorized) -->
+  <!-- ========================================================================= -->
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="admin-logo-badge">IT ADMIN</div>
+        <h2>System Control Portal</h2>
+        <p>Authenticate to manage portfolio modules, projects, and leads.</p>
+      </div>
+
+      <form id="admin-login-form" class="login-form">
+        <div class="form-group">
+          <label for="login-username">Admin Username</label>
+          <input type="text" id="login-username" class="form-input" placeholder="admin" required autocomplete="username" />
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Master Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="••••••••••••" required autocomplete="current-password" />
+        </div>
+
+        <button type="submit" id="login-btn" class="btn btn-primary btn-full">
+          <span>Authenticate Session</span>
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        </button>
+
+        <div class="login-hint">
+          <small>Default credentials: <code>admin</code> / <code>TejaswiniAdmin2026!</code></small>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MAIN ADMIN DASHBOARD WRAPPER -->
+  <!-- ========================================================================= -->
+  <div id="admin-app" class="admin-layout" style="display: none;">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-badge">PT</div>
+        <div class="brand-text">
+          <h3>Tejaswini</h3>
+          <span>Admin Portal</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Dashboard Overview</span>
+        </button>
+
+        <button class="nav-item" data-tab="projects">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          <span>Projects Manager</span>
+          <span id="badge-projects-count" class="count-badge">3</span>
+        </button>
+
+        <button class="nav-item" data-tab="skills">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          <span>Skills &amp; Tech</span>
+        </button>
+
+        <button class="nav-item" data-tab="inquiries">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <span>Recruiter Inquiries</span>
+          <span id="badge-inquiries-count" class="count-badge count-highlight">0</span>
+        </button>
+
+        <button class="nav-item" data-tab="attendance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Attendance Logs</span>
+        </button>
+
+        <button class="nav-item" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Profile &amp; Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="/" target="_blank" class="btn btn-outline btn-sm btn-full">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>View Public Site</span>
+        </a>
+        <button id="logout-btn" class="btn btn-ghost btn-sm btn-full" style="margin-top: 8px;">
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+      <!-- Top Navigation Bar -->
+      <header class="admin-topbar">
+        <div class="topbar-title">
+          <h1 id="page-heading">Dashboard Overview</h1>
+          <p id="page-subheading">System metrics, service status, and live operational stats.</p>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="service-pill" id="service-status-pill">
+            <span class="status-dot online"></span>
+            <span>Services Online</span>
+          </div>
+          <button id="refresh-data-btn" class="btn btn-outline btn-sm" title="Refresh Live Data">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            <span>Sync</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD OVERVIEW -->
+      <section id="tab-overview" class="admin-tab-pane active">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline></svg></div>
+            <div class="metric-content">
+              <span class="metric-label">Active Projects</span>
+              <h3 id="stat-projects" class="metric-val">3</h3>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div>
+            <div class="metric-content">
+              <span class="metric-label">Managed Skills</span>
+              <h3 id="stat-skills" class="metric-val">11</h3>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path></svg></div>
+            <div class="metric-content">
+              <span class="metric-label">Total Inquiries</span>
+              <h3 id="stat-inquiries" class="metric-val">0</h3>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+            <div class="metric-content">
+              <span class="metric-label">Attendance Records</span>
+              <h3 id="stat-attendance" class="metric-val">0</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Activity Section -->
+        <div class="dashboard-split-grid">
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3>Recent Recruiter Inquiries</h3>
+              <button class="btn btn-ghost btn-sm" onclick="switchTab('inquiries')">View All &rarr;</button>
+            </div>
+            <div id="overview-inquiries-list" class="activity-list">
+              <p class="empty-state">No inquiries recorded yet.</p>
+            </div>
+          </div>
+
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3>Biometric Verification Feed</h3>
+              <button class="btn btn-ghost btn-sm" onclick="switchTab('attendance')">View Logs &rarr;</button>
+            </div>
+            <div id="overview-attendance-list" class="activity-list">
+              <p class="empty-state">No verification logs yet.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: PROJECTS MANAGER -->
+      <section id="tab-projects" class="admin-tab-pane">
+        <div class="pane-action-bar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="projects-search" placeholder="Search projects by title, category, or tech..." />
+          </div>
+          <button id="open-add-project-modal" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Add New Project</span>
+          </button>
+        </div>
+
+        <div id="projects-table-container" class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Title &amp; Slug</th>
+                <th>Category</th>
+                <th>Tech Stack</th>
+                <th>Featured</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="projects-table-body">
+              <!-- Loaded via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 3: SKILLS MANAGER -->
+      <section id="tab-skills" class="admin-tab-pane">
+        <div class="pane-action-bar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="skills-search" placeholder="Search skills..." />
+          </div>
+          <button id="open-add-skill-modal" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Add New Skill</span>
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Skill Name</th>
+                <th>Category</th>
+                <th>Proficiency</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="skills-table-body">
+              <!-- Loaded via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 4: INQUIRIES INBOX -->
+      <section id="tab-inquiries" class="admin-tab-pane">
+        <div class="pane-action-bar">
+          <div class="filter-pills">
+            <button class="filter-pill active" data-filter="ALL">All Inquiries</button>
+            <button class="filter-pill" data-filter="NEW">New</button>
+            <button class="filter-pill" data-filter="READ">Read</button>
+            <button class="filter-pill" data-filter="RESPONDED">Responded</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Sender</th>
+                <th>Email</th>
+                <th>Subject &amp; Message</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inquiries-table-body">
+              <!-- Loaded via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 5: ATTENDANCE LOGS -->
+      <section id="tab-attendance" class="admin-tab-pane">
+        <div class="pane-action-bar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="attendance-search" placeholder="Search by student ID or name..." />
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Confidence</th>
+                <th>Verification Status</th>
+                <th>Device</th>
+              </tr>
+            </thead>
+            <tbody id="attendance-table-body">
+              <!-- Loaded via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 6: PROFILE & SETTINGS -->
+      <section id="tab-settings" class="admin-tab-pane">
+        <div class="settings-grid">
+          <!-- Profile Configurations -->
+          <div class="settings-card">
+            <h3>Profile &amp; Contact Configurations</h3>
+            <p class="card-desc">Update public candidate headline, contact numbers, and social links.</p>
+
+            <form id="profile-config-form" class="settings-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cfg-full_name">Full Candidate Name</label>
+                  <input type="text" id="cfg-full_name" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label for="cfg-professional_title">Professional Title</label>
+                  <input type="text" id="cfg-professional_title" class="form-input" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cfg-email">Primary Email</label>
+                  <input type="email" id="cfg-email" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label for="cfg-phone">Phone Number</label>
+                  <input type="text" id="cfg-phone" class="form-input" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cfg-location">Location</label>
+                  <input type="text" id="cfg-location" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label for="cfg-education_cgpa">CGPA / Score</label>
+                  <input type="text" id="cfg-education_cgpa" class="form-input" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="cfg-education_college">College / University</label>
+                <input type="text" id="cfg-education_college" class="form-input" />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cfg-github_url">GitHub URL</label>
+                  <input type="url" id="cfg-github_url" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label for="cfg-linkedin_url">LinkedIn URL</label>
+                  <input type="url" id="cfg-linkedin_url" class="form-input" />
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+                <span>Save Profile Changes</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Master Password Security -->
+          <div class="settings-card">
+            <h3>Admin Security &amp; Password</h3>
+            <p class="card-desc">Change the administrator login password for this dashboard.</p>
+
+            <form id="change-password-form" class="settings-form">
+              <div class="form-group">
+                <label for="current-password">Current Password</label>
+                <input type="password" id="current-password" class="form-input" required />
+              </div>
+
+              <div class="form-group">
+                <label for="new-password">New Master Password</label>
+                <input type="password" id="new-password" class="form-input" minlength="8" required />
+              </div>
+
+              <button type="submit" class="btn btn-outline">
+                <span>Update Password</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. MODAL: ADD / EDIT PROJECT -->
+  <!-- ========================================================================= -->
+  <div id="project-modal" class="admin-modal-backdrop" style="display: none;">
+    <div class="admin-modal-card">
+      <div class="modal-header">
+        <h3 id="project-modal-heading">Add New Project</h3>
+        <button id="close-project-modal" class="close-btn">&times;</button>
+      </div>
+
+      <form id="project-form" class="modal-form">
+        <input type="hidden" id="proj-id" />
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="proj-title">Project Title *</label>
+            <input type="text" id="proj-title" class="form-input" required placeholder="e.g. AI Autonomous Drone" />
+          </div>
+          <div class="form-group">
+            <label for="proj-slug">URL Slug *</label>
+            <input type="text" id="proj-slug" class="form-input" required placeholder="e.g. ai-drone-system" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="proj-category">Category *</label>
+            <input type="text" id="proj-category" class="form-input" required placeholder="e.g. Computer Vision & Robotics" />
+          </div>
+          <div class="form-group">
+            <label for="proj-order">Display Order</label>
+            <input type="number" id="proj-order" class="form-input" value="0" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="proj-overview">Short Overview *</label>
+          <textarea id="proj-overview" class="form-input" rows="2" required placeholder="Brief project summary..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="proj-problem">Problem Statement</label>
+          <textarea id="proj-problem" class="form-input" rows="2" placeholder="What challenge did this solve?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="proj-solution">Technical Solution</label>
+          <textarea id="proj-solution" class="form-input" rows="2" placeholder="How did you engineer the solution?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="proj-features">Key Features (One feature per line)</label>
+          <textarea id="proj-features" class="form-input" rows="3" placeholder="Real-time video processing&#10;Automated database persistence&#10;Sub-second latency"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="proj-technologies">Technologies (Comma separated)</label>
+          <input type="text" id="proj-technologies" class="form-input" placeholder="Python, OpenCV, Flask, MySQL" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="proj-repo">Repository URL</label>
+            <input type="url" id="proj-repo" class="form-input" placeholder="https://github.com/..." />
+          </div>
+          <div class="form-group">
+            <label for="proj-live">Live Demo URL</label>
+            <input type="url" id="proj-live" class="form-input" placeholder="https://..." />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeProjectModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 4. MODAL: ADD / EDIT SKILL -->
+  <!-- ========================================================================= -->
+  <div id="skill-modal" class="admin-modal-backdrop" style="display: none;">
+    <div class="admin-modal-card">
+      <div class="modal-header">
+        <h3 id="skill-modal-heading">Add Technical Skill</h3>
+        <button id="close-skill-modal" class="close-btn">&times;</button>
+      </div>
+
+      <form id="skill-form" class="modal-form">
+        <input type="hidden" id="skill-id" />
+
+        <div class="form-group">
+          <label for="skill-name">Skill Name *</label>
+          <input type="text" id="skill-name" class="form-input" required placeholder="e.g. PyTorch & Deep Learning" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="skill-category">Category *</label>
+            <select id="skill-category" class="form-input" required>
+              <option value="Programming">Programming</option>
+              <option value="Web &amp; Backend">Web &amp; Backend</option>
+              <option value="Databases">Databases</option>
+              <option value="Tools &amp; Machine Learning">Tools &amp; Machine Learning</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="skill-proficiency">Proficiency Percentage (%)</label>
+            <input type="number" id="skill-proficiency" class="form-input" min="10" max="100" value="85" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="skill-order">Display Order</label>
+          <input type="number" id="skill-order" class="form-input" value="0" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeSkillModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Skill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
