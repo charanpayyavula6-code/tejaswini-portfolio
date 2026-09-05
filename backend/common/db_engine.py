@@ -19,6 +19,22 @@ class UnifiedDBEngine:
     def is_mongo_active(cls) -> bool:
         return cloud_db.is_connected()
 
+    @classmethod
+    def _exec_sql(cls, callback):
+        """Executes a SQLAlchemy fallback query ensuring an active application context."""
+        try:
+            from flask import has_app_context
+            if has_app_context():
+                return callback()
+            else:
+                from flask_gateway.app import create_app
+                app = create_app()
+                with app.app_context():
+                    return callback()
+        except Exception as e:
+            logger.error(f"SQL fallback execution error: {e}")
+            return []
+
     # -------------------------------------------------------------------------
     # PROJECTS MODULE
     # -------------------------------------------------------------------------
@@ -37,11 +53,14 @@ class UnifiedDBEngine:
                 logger.warning(f"MongoDB read error for projects: {e}")
 
         # SQL Fallback
-        from flask_gateway.database import ProjectItem
-        q = ProjectItem.query
-        if featured_only:
-            q = q.filter_by(is_featured=True)
-        return [p.to_dict() for p in q.order_by(ProjectItem.display_order.asc()).all()]
+        def _sql_projects():
+            from flask_gateway.database import ProjectItem
+            q = ProjectItem.query
+            if featured_only:
+                q = q.filter_by(is_featured=True)
+            return [p.to_dict() for p in q.order_by(ProjectItem.display_order.asc()).all()]
+
+        return cls._exec_sql(_sql_projects)
 
     @classmethod
     def save_project(cls, project_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -91,8 +110,11 @@ class UnifiedDBEngine:
             except Exception as e:
                 logger.warning(f"MongoDB read error for skills: {e}")
 
-        from flask_gateway.database import SkillItem
-        return [s.to_dict() for s in SkillItem.query.order_by(SkillItem.display_order.asc()).all()]
+        def _sql_skills():
+            from flask_gateway.database import SkillItem
+            return [s.to_dict() for s in SkillItem.query.order_by(SkillItem.display_order.asc()).all()]
+
+        return cls._exec_sql(_sql_skills)
 
     @classmethod
     def save_skill(cls, skill_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -154,8 +176,11 @@ class UnifiedDBEngine:
             except Exception as e:
                 logger.warning(f"MongoDB get inquiries error: {e}")
 
-        from flask_gateway.database import ContactMessage
-        return [m.to_dict() for m in ContactMessage.query.order_by(ContactMessage.created_at.desc()).limit(limit).all()]
+        def _sql_inquiries():
+            from flask_gateway.database import ContactMessage
+            return [m.to_dict() for m in ContactMessage.query.order_by(ContactMessage.created_at.desc()).limit(limit).all()]
+
+        return cls._exec_sql(_sql_inquiries)
 
     # -------------------------------------------------------------------------
     # BIOMETRIC ATTENDANCE RECORDS
@@ -195,8 +220,11 @@ class UnifiedDBEngine:
             except Exception as e:
                 logger.warning(f"MongoDB get attendance error: {e}")
 
-        from flask_gateway.database import AttendanceRecord
-        return [a.to_dict() for a in AttendanceRecord.query.order_by(AttendanceRecord.timestamp.desc()).limit(limit).all()]
+        def _sql_attendance():
+            from flask_gateway.database import AttendanceRecord
+            return [a.to_dict() for a in AttendanceRecord.query.order_by(AttendanceRecord.timestamp.desc()).limit(limit).all()]
+
+        return cls._exec_sql(_sql_attendance)
 
     # -------------------------------------------------------------------------
     # PROFILE CONFIGS & SETTINGS
@@ -214,8 +242,12 @@ class UnifiedDBEngine:
             except Exception as e:
                 logger.warning(f"MongoDB get profile config error: {e}")
 
-        from flask_gateway.database import ProfileConfig
-        return {c.config_key: c.config_value for c in ProfileConfig.query.all()}
+        def _sql_profile():
+            from flask_gateway.database import ProfileConfig
+            return {c.config_key: c.config_value for c in ProfileConfig.query.all()}
+
+        res = cls._exec_sql(_sql_profile)
+        return res if isinstance(res, dict) else {}
 
     @classmethod
     def set_profile_config(cls, key: str, value: str, description: str = "") -> None:

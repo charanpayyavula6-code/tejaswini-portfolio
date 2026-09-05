@@ -20,7 +20,10 @@ except ImportError:
     PYMONGO_AVAILABLE = False
     logger.warning("pymongo is not installed. Cloud database features will operate in fallback mode.")
 
-from backend.common.config import MONGODB_URI, MONGODB_DB_NAME, MONGODB_TIMEOUT_MS
+try:
+    from common.config import MONGODB_URI, MONGODB_DB_NAME, MONGODB_TIMEOUT_MS
+except ImportError:
+    from backend.common.config import MONGODB_URI, MONGODB_DB_NAME, MONGODB_TIMEOUT_MS
 
 class CloudDatabaseManager:
     """Universal MongoDB Atlas Manager with auto-reconnection and health telemetry."""
