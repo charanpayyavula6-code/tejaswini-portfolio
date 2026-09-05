@@ -19,6 +19,18 @@ async def verify_face_attendance(request: FaceVerificationRequest):
             image_base64=request.image_base64,
             device_id=request.device_id or "CAM-GATE-01"
         )
+        if result.get("verified"):
+            try:
+                from common.cloud_db import cloud_db
+                cloud_db.record_attendance(
+                    student_id=result["student_id"],
+                    student_name=result["student_name"],
+                    confidence=result["confidence_score"],
+                    status=result["status"],
+                    device_id=request.device_id or "CAM-GATE-01"
+                )
+            except Exception as db_err:
+                logger.warning(f"Cloud DB attendance log skipped: {db_err}")
         return AttendanceRecordResponse(**result)
     except Exception as e:
         logger.error(f"Error during face biometric verification: {str(e)}", exc_info=True)

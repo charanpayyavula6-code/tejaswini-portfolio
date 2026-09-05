@@ -138,6 +138,17 @@ async def chat_with_assistant(request: AssistantQueryRequest):
     """
     try:
         res = _resolve_query_intent(request.query)
+        try:
+            from common.cloud_db import cloud_db
+            cloud_db.record_ai_telemetry(
+                module="ai_assistant",
+                request_data={"query": request.query},
+                response_data=res,
+                latency_ms=1.2
+            )
+        except Exception as db_e:
+            logger.warning(f"Telemetry recording skipped: {db_e}")
+            
         return AssistantQueryResponse(**res)
     except Exception as e:
         logger.error(f"Error in assistant chat: {e}", exc_info=True)
@@ -145,3 +156,4 @@ async def chat_with_assistant(request: AssistantQueryRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"AI Assistant query failure: {str(e)}"
         )
+

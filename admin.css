@@ -794,6 +794,178 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ==========================================================================
+   10. CLOUD DATABASE (MONGODB ATLAS) MANAGER STYLES
+   ========================================================================== */
+.full-span-card {
+  grid-column: 1 / -1;
+}
+
+.card-header-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.db-badge-large {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--accent-emerald);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.db-badge-large.fallback {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: var(--accent-amber);
+}
+
+.db-badge-large.error {
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(244, 63, 94, 0.3);
+  color: var(--accent-rose);
+}
+
+.status-dot.cloud {
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.status-dot.fallback {
+  background: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+}
+
+.cloud-db-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.db-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.db-info-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.db-info-item .info-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.db-info-item strong {
+  font-size: 14px;
+  color: #fff;
+  font-family: var(--font-mono);
+}
+
+.db-config-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-with-action {
+  display: flex;
+  gap: 8px;
+}
+
+.input-with-action input {
+  flex: 1;
+}
+
+.helper-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.helper-text a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.db-actions-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: none;
+}
+
+.btn-accent:hover {
+  background: linear-gradient(135deg, #34d399, #10b981);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.4);
+}
+
+.collections-summary {
+  margin-top: 10px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+}
+
+.collections-summary h4 {
+  font-size: 13.5px;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.collections-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.collection-chip {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.collection-chip .col-name {
+  font-size: 12px;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+}
+
+.collection-chip .col-count {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--primary);
+}
+
+
 @media (max-width: 900px) {
   .admin-sidebar {
     width: 60px;

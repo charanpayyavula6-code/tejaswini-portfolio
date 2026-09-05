@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_gateway.database import db, ContactMessage
 from common.logger import setup_logger
+from common.cloud_db import cloud_db
 
 api_contact_bp = Blueprint("api_contact_bp", __name__)
 logger = setup_logger("ContactRoute")
@@ -47,6 +48,16 @@ def submit_contact_form():
         )
         db.session.add(new_inquiry)
         db.session.commit()
+        
+        # Dual-sync to MongoDB Atlas if connected
+        cloud_db.save_inquiry(
+            name=name,
+            email=email,
+            subject=subject,
+            message=message,
+            ip=request.remote_addr or "",
+            user_agent=request.headers.get("User-Agent", "Unknown")
+        )
         
         logger.info(f"New contact submission recorded: ID={new_inquiry.id} from {name} <{email}>")
         

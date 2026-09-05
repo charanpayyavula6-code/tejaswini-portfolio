@@ -13,6 +13,7 @@ from flask_gateway.database import (
 )
 from flask_gateway.auth import generate_admin_token, admin_required
 from common.logger import setup_logger
+from common.cloud_db import cloud_db
 
 api_admin_bp = Blueprint("api_admin_bp", __name__)
 logger = setup_logger("AdminAPIRoutes")
@@ -404,3 +405,56 @@ def admin_manage_profile():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
+
+# ============================================================================
+# 7. CLOUD DATABASE (MONGODB ATLAS) MANAGEMENT
+# ============================================================================
+@api_admin_bp.route("/api/admin/database/status", methods=["GET"])
+@admin_required
+def admin_database_status():
+    """Returns real-time status and health telemetry of Cloud Database / SQLite."""
+    status = cloud_db.get_status()
+    # Add count of local SQL models for comparison
+    status["local_counts"] = {
+        "projects": ProjectItem.query.count(),
+        "skills": SkillItem.query.count(),
+        "inquiries": ContactMessage.query.count(),
+        "attendance": AttendanceRecord.query.count(),
+        "configs": ProfileConfig.query.count()
+    }
+    return jsonify({"success": True, "database_status": status}), 200
+
+@api_admin_bp.route("/api/admin/database/test-connection", methods=["POST"])
+@admin_required
+def admin_database_test():
+    """Tests connectivity to a provided MongoDB Atlas connection URI."""
+    data = request.get_json() or {}
+    test_uri = data.get("uri", "").strip()
+    result = cloud_db.test_connection(uri=test_uri if test_uri else None)
+    return jsonify(result), (200 if result.get("success") else 400)
+
+@api_admin_bp.route("/api/admin/database/sync-to-cloud", methods=["POST"])
+@admin_required
+def admin_database_sync_to_cloud():
+    """Synchronizes and upserts all local database records into MongoDB Atlas collections."""
+    if not cloud_db.is_connected():
+        return jsonify({
+            "success": False,
+            "message": "MongoDB Atlas is not currently connected. Please test and save a valid connection URI first."
+        }), 400
+        
+    projects = [p.to_dict() for p in ProjectItem.query.all()]
+    skills = [s.to_dict() for s in SkillItem.query.all()]
+    inquiries = [i.to_dict() for i in ContactMessage.query.all()]
+    attendance = [a.to_dict() for a in AttendanceRecord.query.all()]
+    configs = [c.to_dict() for c in ProfileConfig.query.all()]
+    
+    result = cloud_db.sync_all_from_sql(
+        projects=projects,
+        skills=skills,
+        inquiries=inquiries,
+        attendance=attendance,
+        configs=configs
+    )
+    return jsonify(result), (200 if result.get("success") else 500)
+

@@ -122,6 +122,10 @@
         </div>
 
         <div class="topbar-actions">
+          <div class="service-pill" id="db-status-pill" title="Cloud Database Connection State">
+            <span class="status-dot" id="db-status-dot"></span>
+            <span id="db-status-label">Checking DB...</span>
+          </div>
           <div class="service-pill" id="service-status-pill">
             <span class="status-dot online"></span>
             <span>Services Online</span>
@@ -398,6 +402,69 @@
                 <span>Update Password</span>
               </button>
             </form>
+          </div>
+
+          <!-- Cloud Database (MongoDB Atlas) Manager -->
+          <div class="settings-card full-span-card" id="cloud-db-card">
+            <div class="card-header-flex">
+              <div>
+                <h3>Cloud Database (MongoDB Atlas) Integration</h3>
+                <p class="card-desc">Connect free MongoDB Atlas cloud cluster to synchronize and persist all modules.</p>
+              </div>
+              <div id="cloud-db-badge-large" class="db-badge-large">
+                <span class="status-dot"></span>
+                <span id="cloud-db-badge-text">Checking Database...</span>
+              </div>
+            </div>
+
+            <div class="cloud-db-panel">
+              <div class="db-info-grid">
+                <div class="db-info-item">
+                  <span class="info-label">Current Mode</span>
+                  <strong id="db-mode-val">SQLite (Local / Serverless)</strong>
+                </div>
+                <div class="db-info-item">
+                  <span class="info-label">Active Database</span>
+                  <strong id="db-name-val">portfolio.db</strong>
+                </div>
+                <div class="db-info-item">
+                  <span class="info-label">Network Ping Latency</span>
+                  <strong id="db-ping-val">0.1 ms</strong>
+                </div>
+                <div class="db-info-item">
+                  <span class="info-label">Connected Modules</span>
+                  <strong id="db-modules-val">Projects, Skills, Inquiries, Attendance, AI</strong>
+                </div>
+              </div>
+
+              <div class="db-config-section">
+                <label for="mongo-uri-input">MongoDB Atlas Connection URI</label>
+                <div class="input-with-action">
+                  <input type="password" id="mongo-uri-input" class="form-input" placeholder="mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/tejaswini_portfolio?retryWrites=true&w=majority" />
+                  <button type="button" id="toggle-uri-visibility" class="btn btn-ghost btn-sm" title="Show/Hide URI">👁️</button>
+                </div>
+                <small class="helper-text">Get your free cluster connection string from <a href="https://cloud.mongodb.com" target="_blank" rel="noopener">MongoDB Atlas</a> &gt; Database &gt; Connect &gt; Drivers (Python).</small>
+              </div>
+
+              <div class="db-actions-row">
+                <button type="button" id="test-db-connection-btn" class="btn btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  <span>Test &amp; Ping Connection</span>
+                </button>
+                <button type="button" id="sync-db-to-cloud-btn" class="btn btn-accent">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                  <span>⚡ Sync All Local Data to MongoDB Atlas</span>
+                </button>
+              </div>
+
+              <!-- Live Collections Summary Table -->
+              <div class="collections-summary" id="collections-summary-container">
+                <h4>Database Collections &amp; Synchronization Status</h4>
+                <div class="collections-chips-grid" id="collections-chips-grid">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

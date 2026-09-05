@@ -27,6 +27,16 @@ async def predict_diabetes(request: DiabetesPredictionRequest):
             skin_thickness=request.skin_thickness,
             pedigree=request.diabetes_pedigree
         )
+        try:
+            from common.cloud_db import cloud_db
+            cloud_db.record_ai_telemetry(
+                module="disease_prediction_diabetes",
+                request_data={"glucose": request.glucose, "bmi": request.bmi, "age": request.age},
+                response_data={"risk_level": result.get("risk_level"), "probability": result.get("risk_probability")},
+                latency_ms=1.5
+            )
+        except Exception:
+            pass
         return DiseaseRiskResponse(**result)
     except Exception as e:
         logger.error(f"Error during diabetes prediction: {e}", exc_info=True)
@@ -52,6 +62,16 @@ async def predict_heart_disease(request: HeartDiseasePredictionRequest):
             st_depression=request.st_depression,
             exercise_angina=request.exercise_induced_angina
         )
+        try:
+            from common.cloud_db import cloud_db
+            cloud_db.record_ai_telemetry(
+                module="disease_prediction_heart",
+                request_data={"age": request.age, "resting_bp": request.resting_bp, "cholesterol": request.cholesterol},
+                response_data={"risk_level": result.get("risk_level"), "probability": result.get("risk_probability")},
+                latency_ms=1.5
+            )
+        except Exception:
+            pass
         return DiseaseRiskResponse(**result)
     except Exception as e:
         logger.error(f"Error during cardiovascular prediction: {e}", exc_info=True)
@@ -59,3 +79,4 @@ async def predict_heart_disease(request: HeartDiseasePredictionRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Heart disease risk evaluation failure: {str(e)}"
         )
+

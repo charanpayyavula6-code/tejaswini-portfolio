@@ -14,6 +14,16 @@ async def predict_spam(request: SpamAnalysisRequest):
     """
     try:
         result = spam_engine.analyze(request.email_text)
+        try:
+            from common.cloud_db import cloud_db
+            cloud_db.record_ai_telemetry(
+                module="spam_detector",
+                request_data={"text_snippet": request.email_text[:80]},
+                response_data={"is_spam": result.get("is_spam"), "spam_probability": result.get("spam_probability")},
+                latency_ms=result.get("inference_time_ms", 1.0)
+            )
+        except Exception:
+            pass
         return SpamAnalysisResponse(**result)
     except Exception as e:
         logger.error(f"Error during spam analysis: {str(e)}", exc_info=True)

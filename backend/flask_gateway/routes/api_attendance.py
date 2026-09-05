@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_gateway.client_fastapi import fastapi_client
 from flask_gateway.database import db, AttendanceRecord
 from common.logger import setup_logger
+from common.cloud_db import cloud_db
 
 api_attendance_bp = Blueprint("api_attendance_bp", __name__)
 logger = setup_logger("AttendanceRoute")
@@ -11,7 +12,8 @@ def verify_and_log_attendance():
     """
     1. Forwards face image/credentials to FastAPI compute engine.
     2. If verified, persists attendance event record into SQLite database.
-    3. Returns full audit record to client.
+    3. Dual-syncs to MongoDB Atlas Cloud Database.
+    4. Returns full audit record to client.
     """
     data = request.get_json() or {}
     student_id = data.get("student_id", "").strip()
@@ -48,6 +50,16 @@ def verify_and_log_attendance():
             )
             db.session.add(record)
             db.session.commit()
+            
+            # Dual-sync to MongoDB Atlas
+            cloud_db.record_attendance(
+                student_id=compute_result["student_id"],
+                student_name=compute_result["student_name"],
+                confidence=compute_result["confidence_score"],
+                status=compute_result["status"],
+                device_id=device_id
+            )
+            
             compute_result["db_record_id"] = record.id
             logger.info(f"Biometric attendance committed to DB: Record #{record.id} for {student_id}")
         except Exception as e:

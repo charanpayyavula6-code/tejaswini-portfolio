@@ -212,7 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
       loadSkills(),
       loadInquiries(),
       loadAttendance(),
-      loadProfileConfig()
+      loadProfileConfig(),
+      loadDatabaseStatus()
     ]);
   }
 
@@ -681,7 +682,137 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 9. SEARCH BARS
+  // 9. CLOUD DATABASE (MONGODB ATLAS) MANAGER
+  // =========================================================================
+  async function loadDatabaseStatus() {
+    const data = await apiRequest('/api/admin/database/status');
+    if (!data || !data.success) return;
+    const db = data.database_status;
+
+    // Topbar Pill
+    const topPillDot = document.getElementById('db-status-dot');
+    const topPillLabel = document.getElementById('db-status-label');
+    if (topPillDot && topPillLabel) {
+      if (db.connected) {
+        topPillDot.className = 'status-dot cloud';
+        topPillLabel.textContent = 'MongoDB Atlas';
+      } else {
+        topPillDot.className = 'status-dot fallback';
+        topPillLabel.textContent = 'SQLite Active';
+      }
+    }
+
+    // Settings Card Elements
+    const badgeLarge = document.getElementById('cloud-db-badge-large');
+    const badgeText = document.getElementById('cloud-db-badge-text');
+    const modeVal = document.getElementById('db-mode-val');
+    const nameVal = document.getElementById('db-name-val');
+    const pingVal = document.getElementById('db-ping-val');
+    const chipsGrid = document.getElementById('collections-chips-grid');
+
+    if (badgeLarge && badgeText) {
+      if (db.connected) {
+        badgeLarge.className = 'db-badge-large';
+        badgeText.textContent = '🟢 MongoDB Atlas Active';
+      } else {
+        badgeLarge.className = 'db-badge-large fallback';
+        badgeText.textContent = '🟡 Local / Serverless SQLite Active';
+      }
+    }
+
+    if (modeVal) modeVal.textContent = db.connected ? 'MongoDB Atlas (Cloud Cluster)' : 'SQLite (Local / Serverless)';
+    if (nameVal) nameVal.textContent = db.database_name || 'portfolio.db';
+    if (pingVal) pingVal.textContent = `${db.latency_ms || 0.1} ms`;
+
+    if (chipsGrid) {
+      const stats = db.collection_stats || {};
+      const local = db.local_counts || {};
+      const cols = [
+        { label: 'Projects', count: stats.portfolio_projects ?? local.projects ?? 0 },
+        { label: 'Skills & Tech', count: stats.portfolio_skills ?? local.skills ?? 0 },
+        { label: 'Inquiries', count: stats.contact_messages ?? local.inquiries ?? 0 },
+        { label: 'Attendance Logs', count: stats.attendance_records ?? local.attendance ?? 0 },
+        { label: 'Profile Configs', count: stats.profile_configs ?? local.configs ?? 0 },
+        { label: 'AI Inference Logs', count: stats.ai_telemetry ?? 0 }
+      ];
+
+      chipsGrid.innerHTML = cols.map(c => `
+        <div class="collection-chip">
+          <span class="col-name">${escapeHtml(c.label)}</span>
+          <span class="col-count">${c.count} docs</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  // Database Connection Actions
+  const testDbBtn = document.getElementById('test-db-connection-btn');
+  const syncDbBtn = document.getElementById('sync-db-to-cloud-btn');
+  const mongoUriInput = document.getElementById('mongo-uri-input');
+  const toggleUriBtn = document.getElementById('toggle-uri-visibility');
+
+  if (toggleUriBtn && mongoUriInput) {
+    toggleUriBtn.addEventListener('click', () => {
+      if (mongoUriInput.type === 'password') {
+        mongoUriInput.type = 'text';
+        toggleUriBtn.textContent = '🔒';
+      } else {
+        mongoUriInput.type = 'password';
+        toggleUriBtn.textContent = '👁️';
+      }
+    });
+  }
+
+  if (testDbBtn) {
+    testDbBtn.addEventListener('click', async () => {
+      const uri = mongoUriInput ? mongoUriInput.value.trim() : '';
+      testDbBtn.disabled = true;
+      testDbBtn.innerHTML = '<span>Testing Connection...</span>';
+
+      const res = await apiRequest('/api/admin/database/test-connection', {
+        method: 'POST',
+        body: JSON.stringify({ uri })
+      });
+
+      testDbBtn.disabled = false;
+      testDbBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg><span>Test &amp; Ping Connection</span>';
+
+      if (res && res.success) {
+        showToast(res.message, 'success');
+        await loadDatabaseStatus();
+      } else {
+        showToast(res ? res.message : 'Database connection test failed', 'error');
+      }
+    });
+  }
+
+  if (syncDbBtn) {
+    syncDbBtn.addEventListener('click', async () => {
+      if (!confirm('Sync all current database records (Projects, Skills, Inquiries, Attendance, Settings) to MongoDB Atlas?')) {
+        return;
+      }
+
+      syncDbBtn.disabled = true;
+      syncDbBtn.innerHTML = '<span>Synchronizing to Cloud...</span>';
+
+      const res = await apiRequest('/api/admin/database/sync-to-cloud', {
+        method: 'POST'
+      });
+
+      syncDbBtn.disabled = false;
+      syncDbBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg><span>⚡ Sync All Local Data to MongoDB Atlas</span>';
+
+      if (res && res.success) {
+        showToast(res.message, 'success');
+        await loadDatabaseStatus();
+      } else {
+        showToast(res ? res.message : 'Database synchronization failed', 'error');
+      }
+    });
+  }
+
+  // =========================================================================
+  // 10. SEARCH BARS
   // =========================================================================
   const projSearch = document.getElementById('projects-search');
   if (projSearch) {
