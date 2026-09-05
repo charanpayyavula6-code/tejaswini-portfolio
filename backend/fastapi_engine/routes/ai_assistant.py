@@ -8,48 +8,47 @@ logger = setup_logger("AIAssistantRoute")
 
 TEJASWINI_PROFILE_KNOWLEDGE = {
     "name": "Pemmasani Tejaswini",
-    "role": "Computer Science Engineer & Python Developer",
-    "education": "B.Tech in Computer Science and Engineering (CSE) from Audisankara College of Engineering & Technology, Gudur (2022 - 2026). Cumulative CGPA: 8.5/10.",
-    "intermediate": "Narayana Junior College, Gudur (2020 - 2022) with 83%.",
-    "schooling": "DRR High School, Gudur (Passed 2020) with 95%.",
+    "role": "Computer Science Engineer & Python Full Stack Developer",
+    "education": "B.Tech in Computer Science and Engineering (2022 - 2026) from PBR Vits, Kavali. Cumulative CGPA: 8.40/10.",
+    "internship": "Python Full Stack Developer Intern at Code Tantra Platform (12-5-2025 – 21-06-2025). Hands-on experience in Python & HTML web development.",
     "skills": {
-        "programming": ["Python", "C"],
+        "programming": ["Python", "SQL"],
         "web": ["HTML", "CSS", "JavaScript", "Flask", "FastAPI"],
-        "databases": ["MySQL", "SQLite"],
-        "tools": ["Git", "GitHub", "VS Code", "OpenCV", "Scikit-Learn"]
+        "libraries": ["OpenCV", "Scikit-Learn", "Pillow"],
+        "soft_skills": ["Communication skills", "Adaptability", "Time management", "Problem solving"]
     },
     "projects": [
         {
             "name": "Face Recognition Attendance System",
             "tech": "Python, OpenCV, Face Recognition, MySQL",
-            "desc": "Real-time webcam biometric face detection, landmark extraction, and automated timestamped attendance logging to MySQL.",
+            "desc": "Real-time webcam face detection & recognition for automated biometric attendance tracking.",
             "repo": "https://github.com/pemmasanitejaswini/face-project"
         },
         {
             "name": "Email Spam Detection",
-            "tech": "Python, Machine Learning, NLP, Scikit-Learn",
-            "desc": "Natural language processing text classification pipeline distinguishing genuine emails from spam/phishing.",
+            "tech": "Python, NLP, Machine Learning",
+            "desc": "Machine learning NLP classification pipeline distinguishing genuine emails from spam.",
             "repo": "https://github.com/pemmasanitejaswini/email-spam-detection"
         },
         {
             "name": "CAPTCHA Generator",
-            "tech": "Python, Web Technologies, Cryptography",
-            "desc": "Dynamic visual CAPTCHA generator with procedural noise injection and salted cryptographic verification.",
+            "tech": "Python, HTML, Web Technologies",
+            "desc": "Dynamic visual CAPTCHA verification codes with custom noise and fonts to prevent bots.",
             "repo": "https://github.com/pemmasanitejaswini/captcha-generator"
         }
     ],
     "certifications": [
-        "Python Programming Certification - Infosys Springboard",
-        "Introduction to Computer Science & Problem Solving - Cisco Networking Academy",
-        "Foundational Machine Learning Concepts"
+        "Paper Presentation: Received participation certificate at PBR VITS College during Visvotsav 2024",
+        "Debugging Event: Received Participation Certificate in Debugging Event at Andhra Engineering College, Atmakur"
     ],
     "contact": {
         "email": "pemmasanitejaswini59@gmail.com",
-        "phone": "+91 9392576974",
-        "location": "Gudur, Andhra Pradesh, India",
-        "linkedin": "https://linkedin.com/in/tejaswini-pemmasani-cse",
+        "phone": "+91 8341650531",
+        "location": "Bangalore, India",
+        "linkedin": "https://linkedin.com",
         "github": "https://github.com/pemmasanitejaswini"
-    }
+    },
+    "resume_url": "/resume.pdf"
 }
 
 def _resolve_query_intent(query: str) -> dict:
@@ -82,30 +81,56 @@ def _resolve_query_intent(query: str) -> dict:
             "suggested_actions": ["View GitHub Profile", "Check Machine Learning Projects"]
         }
         
-    # 3. Education & Background
-    if any(k in q for k in ["education", "college", "degree", "cgpa", "gpa", "study", "university", "school"]):
+    # 3. Resume Query
+    if any(k in q for k in ["resume", "cv", "download resume", "pdf", "profile doc"]):
+        return {
+            "category": "Resume",
+            "confidence": 0.99,
+            "answer": (
+                f"You can view and download Tejaswini's official resume PDF directly:\n\n"
+                f"• **Download PDF**: [Tejaswini_Pemmasani_Resume.pdf](/resume.pdf)\n"
+                f"• **Degree**: {TEJASWINI_PROFILE_KNOWLEDGE['education']}\n"
+                f"• **Internship**: {TEJASWINI_PROFILE_KNOWLEDGE['internship']}\n"
+                f"• **Email**: {TEJASWINI_PROFILE_KNOWLEDGE['contact']['email']}"
+            ),
+            "suggested_actions": ["Download Resume (PDF)", "View Projects", "Contact Tejaswini"]
+        }
+
+    # 4. Education & Background
+    if any(k in q for k in ["education", "college", "degree", "cgpa", "gpa", "study", "university", "pbr"]):
         return {
             "category": "Education",
             "confidence": 0.97,
             "answer": (
-                f"**Degree**: {TEJASWINI_PROFILE_KNOWLEDGE['education']}\n"
-                f"**Intermediate**: {TEJASWINI_PROFILE_KNOWLEDGE['intermediate']}\n"
-                f"**Secondary School**: {TEJASWINI_PROFILE_KNOWLEDGE['schooling']}"
+                f"**Degree**: {TEJASWINI_PROFILE_KNOWLEDGE['education']}\n\n"
+                f"**Internship**: {TEJASWINI_PROFILE_KNOWLEDGE['internship']}"
             ),
             "suggested_actions": ["Download Resume", "Contact for Opportunities"]
         }
         
-    # 4. Certifications
-    if any(k in q for k in ["certif", "course", "infosys", "cisco"]):
+    # 5. Internship & Experience
+    if any(k in q for k in ["intern", "experience", "work experience", "codetantra", "code tantra"]):
+        return {
+            "category": "Experience",
+            "confidence": 0.98,
+            "answer": (
+                f"**Internship Experience**:\n\n"
+                f"{TEJASWINI_PROFILE_KNOWLEDGE['internship']}"
+            ),
+            "suggested_actions": ["Download Resume", "View GitHub Projects"]
+        }
+
+    # 6. Certifications
+    if any(k in q for k in ["certif", "achievement", "award", "visvotsav", "debugging"]):
         certs = "\n".join([f"• {c}" for c in TEJASWINI_PROFILE_KNOWLEDGE["certifications"]])
         return {
             "category": "Certifications",
             "confidence": 0.94,
-            "answer": f"Tejaswini holds verified industry certifications:\n\n{certs}",
+            "answer": f"Tejaswini holds verified certifications and achievements:\n\n{certs}",
             "suggested_actions": ["View Full Resume", "Connect on LinkedIn"]
         }
         
-    # 5. Contact / Hire Query
+    # 7. Contact / Hire Query
     if any(k in q for k in ["contact", "email", "phone", "reach", "hire", "interview", "call", "message"]):
         c = TEJASWINI_PROFILE_KNOWLEDGE["contact"]
         return {
@@ -116,9 +141,9 @@ def _resolve_query_intent(query: str) -> dict:
                 f"• **Email**: [{c['email']}](mailto:{c['email']})\n"
                 f"• **Phone**: [{c['phone']}](tel:{c['phone']})\n"
                 f"• **Location**: {c['location']}\n"
-                f"• **LinkedIn**: [Profile]({c['linkedin']})"
+                f"• **GitHub**: [{c['github']}]({c['github']})"
             ),
-            "suggested_actions": ["Send Direct Message", "Schedule Interview"]
+            "suggested_actions": ["Send Direct Message", "Download Resume"]
         }
         
     # Default Profile Summary
@@ -127,10 +152,10 @@ def _resolve_query_intent(query: str) -> dict:
         "confidence": 0.88,
         "answer": (
             f"**Pemmasani Tejaswini** is a Computer Science Engineer and Python Developer specializing in "
-            f"backend engineering (Flask, FastAPI), Computer Vision (OpenCV), and Machine Learning (NLP, classification). "
-            f"Currently pursuing B.Tech in CSE with an 8.5 CGPA at Audisankara College of Engineering & Technology."
+            f"Python, OpenCV, Machine Learning (NLP), and Full Stack Web Development. "
+            f"Currently pursuing B.Tech in CSE (CGPA 8.40) at PBR VITS, Kavali."
         ),
-        "suggested_actions": ["Ask about Projects", "Ask about Skills", "Contact Tejaswini"]
+        "suggested_actions": ["Download Resume", "Ask about Projects", "Contact Tejaswini"]
     }
 
 @router.post("/chat", response_model=AssistantQueryResponse, status_code=status.HTTP_200_OK)

@@ -79,6 +79,26 @@ def create_app() -> Flask:
     def serve_admin_portal():
         return send_from_directory(str(FRONTEND_DIR), "admin.html")
 
+    # Serve Resume PDF & Download Endpoints
+    @app.route("/resume.pdf", methods=["GET"])
+    @app.route("/Tejaswini_Pemmasani_Resume.pdf", methods=["GET"])
+    def serve_resume_pdf():
+        return send_from_directory(
+            str(FRONTEND_DIR),
+            "Tejaswini_Pemmasani_Resume.pdf",
+            mimetype="application/pdf"
+        )
+
+    @app.route("/download-resume", methods=["GET"])
+    def download_resume():
+        return send_from_directory(
+            str(FRONTEND_DIR),
+            "Tejaswini_Pemmasani_Resume.pdf",
+            as_attachment=True,
+            download_name="Pemmasani_Tejaswini_Resume.pdf",
+            mimetype="application/pdf"
+        )
+
     # API Overview endpoint
     @app.route("/api", methods=["GET"])
     def api_overview():

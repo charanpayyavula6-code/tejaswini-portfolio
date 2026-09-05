@@ -811,14 +811,18 @@ engineer = SoftwareEngineer()
             </p>
           </div>
           <div class="resume-cta-actions">
-            <button class="btn btn-primary resume-modal-trigger">
+            <a href="resume.pdf" download="Tejaswini_Pemmasani_Resume.pdf" class="btn btn-primary" id="direct-resume-download-btn">
               <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              <span>Download Resume</span>
-            </button>
-            <a href="#contact" class="btn btn-outline">
-              <span>Contact Me</span>
-              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              <span>Download Resume (PDF)</span>
             </a>
+            <a href="resume.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <span>View PDF in Browser</span>
+            </a>
+            <button class="btn btn-secondary resume-modal-trigger" aria-label="Open Interactive Resume Viewer">
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>Interactive Viewer</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1025,28 +1029,27 @@ engineer = SoftwareEngineer()
     </div>
   </div>
 
-  <!-- ============================================== -->
-  <!-- MODAL: RESUME VIEWER & RECRUITER VERIFICATION -->
-  <!-- ============================================== -->
   <div id="resume-modal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-labelledby="resume-modal-title">
     <div class="modal-card resume-modal-card">
       <div class="modal-header">
         <div>
-          <span class="project-category-tag">Official Resume</span>
-          <h3 id="resume-modal-title" class="modal-title">Pemmasani Tejaswini — Resume Overview</h3>
+          <span class="project-category-tag">Official Verified Resume</span>
+          <h3 id="resume-modal-title" class="modal-title">Pemmasani Tejaswini &mdash; Software Engineer</h3>
         </div>
         <button id="resume-close-btn" class="modal-close-btn" aria-label="Close resume modal">&times;</button>
       </div>
 
       <div class="modal-body">
         <div class="resume-overview-card">
+          
+          <!-- Quick Meta Grid -->
           <div class="resume-meta-grid">
             <div class="resume-meta-box">
-              <span class="label">Candidate Name</span>
+              <span class="label">Candidate</span>
               <span class="val">Pemmasani Tejaswini</span>
             </div>
             <div class="resume-meta-box">
-              <span class="label">Education</span>
+              <span class="label">Degree &amp; CGPA</span>
               <span class="val">B.Tech CSE, PBR VITS (CGPA: 8.40)</span>
             </div>
             <div class="resume-meta-box">
@@ -1054,32 +1057,59 @@ engineer = SoftwareEngineer()
               <span class="val">Bangalore, India</span>
             </div>
             <div class="resume-meta-box">
-              <span class="label">Contact</span>
+              <span class="label">Contact Email</span>
               <span class="val">pemmasanitejaswini59@gmail.com</span>
             </div>
           </div>
 
+          <!-- Career Objective -->
           <div class="resume-section-block">
-            <h4 class="resume-block-title">Key Resume Facts (Source of Truth)</h4>
+            <h4 class="resume-block-title">Career Objective</h4>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+              To obtain a position as a Software Engineer in a growth-oriented organization where I can apply my programming knowledge, problem-solving skills, and passion for technology to develop innovative solutions while continuously learning and contributing to the company&rsquo;s success.
+            </p>
+          </div>
+
+          <!-- Key Highlights -->
+          <div class="resume-section-block">
+            <h4 class="resume-block-title">Curriculum &amp; Experience Highlights</h4>
             <ul class="resume-facts-list">
-              <li><strong>Internship:</strong> CodeTantra &mdash; Python Full Stack Developer Intern (12 May 2025 &ndash; 21 June 2025).</li>
-              <li><strong>Core Skills:</strong> Python, SQL, HTML, CSS, JavaScript, OpenCV.</li>
-              <li><strong>3 Featured Projects:</strong> Face Recognition Attendance System, Email Spam Detection, CAPTCHA Generator.</li>
-              <li><strong>Certifications:</strong> Visvotsav 2024 Paper Presentation at PBR VITS, Debugging Event at AEC Atmakur.</li>
+              <li><strong>Education:</strong> B.Tech in Computer Science &amp; Engineering (2022 &ndash; 2026), PBR VITS, Kavali &mdash; <strong>CGPA: 8.40</strong>.</li>
+              <li><strong>Internship:</strong> Code Tantra Platform &mdash; Python Full Stack Developer Intern (12-5-2025 &ndash; 21-06-2025). Gained hands-on experience in Python &amp; HTML web development.</li>
+              <li><strong>Technical Skills:</strong> Python, SQL, HTML, CSS, JavaScript, OpenCV.</li>
+              <li><strong>Soft Skills:</strong> Communication skills, Adaptability, Time management, Problem solving.</li>
+              <li><strong>Key Projects:</strong>
+                <ul style="margin-top: 6px; padding-left: 20px; list-style: circle;">
+                  <li>Face Recognition Attendance System (Python, OpenCV, Face Recognition, MySQL)</li>
+                  <li>Email Spam Detection (Python, NLP, Machine Learning)</li>
+                  <li>CAPTCHA Generator (Python, HTML, Web Technologies)</li>
+                </ul>
+              </li>
+              <li><strong>Certifications &amp; Achievements:</strong>
+                <ul style="margin-top: 6px; padding-left: 20px; list-style: circle;">
+                  <li>Paper Presentation: Received participation certificate at PBR VITS College during Visvotsav 2024.</li>
+                  <li>Debugging Event: Received Participation Certificate in Debugging Event at Andhra Engineering College, Atmakur.</li>
+                </ul>
+              </li>
             </ul>
           </div>
+
         </div>
       </div>
 
       <div class="modal-footer">
-        <button id="print-resume-btn" class="btn btn-sm btn-outline">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-          <span>Print / Save as PDF</span>
-        </button>
-        <a href="mailto:pemmasanitejaswini59@gmail.com?subject=Resume%20Inquiry%20-%20Pemmasani%20Tejaswini" class="btn btn-sm btn-primary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          <span>Request Full PDF</span>
+        <a href="resume.pdf" download="Tejaswini_Pemmasani_Resume.pdf" class="btn btn-sm btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Download PDF</span>
         </a>
+        <a href="resume.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>Open Fullscreen PDF &nearr;</span>
+        </a>
+        <button id="print-resume-btn" class="btn btn-sm btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          <span>Print</span>
+        </button>
       </div>
     </div>
   </div>
