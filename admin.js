@@ -63,16 +63,33 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { ...headers, ...(options.headers || {}) }
       });
 
+      const contentType = res.headers.get('content-type') || '';
+      let data = null;
+
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          data = { 
+            success: false, 
+            message: `Server returned HTTP ${res.status}: ${text.slice(0, 120)}` 
+          };
+        }
+      }
+
       if (res.status === 401) {
         // Unauthorized
-        handleLogout('Session expired. Please log in again.');
+        handleLogout('Session expired or unauthorized. Please log in.');
         return null;
       }
 
-      return await res.json();
+      return data;
     } catch (err) {
       console.error(`API Error on ${endpoint}:`, err);
-      showToast(`Network error: ${err.message}`, 'error');
+      showToast(`Connection error: ${err.message}`, 'error');
       return null;
     }
   }

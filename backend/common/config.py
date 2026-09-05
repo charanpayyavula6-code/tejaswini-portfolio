@@ -3,7 +3,13 @@ from pathlib import Path
 
 # Base Paths
 BASE_DIR = Path(__file__).resolve().parent.parent
-INSTANCE_DIR = BASE_DIR / "instance"
+
+# On Vercel / AWS Lambda serverless environments, the filesystem is read-only except /tmp
+if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+    INSTANCE_DIR = Path("/tmp")
+else:
+    INSTANCE_DIR = BASE_DIR / "instance"
+
 INSTANCE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Microservice Network Configurations
@@ -31,5 +37,6 @@ CORS_ORIGINS = [
     "http://127.0.0.1:5000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://tejaswini-portfolio-six.vercel.app",
     "*"
 ]
